@@ -42,17 +42,17 @@ com.github.bannmann.maven.probe.its:dogfooding:jar:0.0.1-SNAPSHOT
 │   │   │   ├── org.apache.maven:maven-model:jar:3.2.1
 │   │   │   ├── org.apache.maven:maven-model-builder:jar:3.2.1
 │   │   │   ├── org.apache.maven:maven-repository-metadata:jar:3.2.1
-│   │   │   ├── org.eclipse.aether:aether-api:jar:0.9.0.M2 {conflicts with 1.0.2.v20150114}
-│   │   │   ├── org.eclipse.aether:aether-spi:jar:0.9.0.M2 {conflicts with 1.0.2.v20150114}
-│   │   │   ├── org.eclipse.aether:aether-util:jar:0.9.0.M2 {conflicts with 1.0.2.v20150114}
-│   │   │   ├── org.eclipse.aether:aether-impl:jar:0.9.0.M2 {conflicts with 1.0.2.v20150114}
+│   │   │   ├── org.eclipse.aether:aether-api:jar:1.0.2.v20150114 {mediated from 0.9.0.M2}
+│   │   │   ├── org.eclipse.aether:aether-spi:jar:1.0.2.v20150114 {mediated from 0.9.0.M2}
+│   │   │   ├── org.eclipse.aether:aether-util:jar:1.0.2.v20150114 {mediated from 0.9.0.M2}
+│   │   │   ├── org.eclipse.aether:aether-impl:jar:1.0.2.v20150114 {mediated from 0.9.0.M2}
 │   │   │   ├── org.codehaus.plexus:plexus-component-annotations:jar:1.5.5
 │   │   │   └── org.codehaus.plexus:plexus-utils:jar:3.0.17
-│   │   ├── org.eclipse.aether:aether-impl:jar:0.9.0.M2 {conflicts with 1.0.2.v20150114}
-│   │   ├── org.eclipse.aether:aether-api:jar:0.9.0.M2 {conflicts with 1.0.2.v20150114}
-│   │   ├── org.eclipse.aether:aether-util:jar:0.9.0.M2 {conflicts with 1.0.2.v20150114}
+│   │   ├── org.eclipse.aether:aether-impl:jar:1.0.2.v20150114 {mediated from 0.9.0.M2}
+│   │   ├── org.eclipse.aether:aether-api:jar:1.0.2.v20150114 {mediated from 0.9.0.M2}
+│   │   ├── org.eclipse.aether:aether-util:jar:1.0.2.v20150114 {mediated from 0.9.0.M2}
 │   │   ├── org.eclipse.sisu:org.eclipse.sisu.plexus:jar:0.0.0.M5
-│   │   │   ├── javax.enterprise:cdi-api:jar:1.0 {conflicts with 1.2}
+│   │   │   ├── javax.enterprise:cdi-api:jar:1.2 {mediated from 1.0}
 │   │   │   ├── com.google.guava:guava:jar:25.1-jre (version managed from 10.0.1)
 │   │   │   ├── org.sonatype.sisu:sisu-guice:jar:no_aop:3.1.0
 │   │   │   │   ├── javax.inject:javax.inject:jar:1
@@ -63,19 +63,19 @@ com.github.bannmann.maven.probe.its:dogfooding:jar:0.0.1-SNAPSHOT
 │   │   │   │       ├── javax.inject:javax.inject:jar:1
 │   │   │   │       └── aopalliance:aopalliance:jar:1.0
 │   │   │   ├── org.codehaus.plexus:plexus-component-annotations:jar:1.5.5
-│   │   │   ├── org.codehaus.plexus:plexus-classworlds:jar:2.4 {conflicts with 2.5.1}
-│   │   │   └── org.codehaus.plexus:plexus-utils:jar:2.1 {conflicts with 3.0.17}
+│   │   │   ├── org.codehaus.plexus:plexus-classworlds:jar:2.5.1 {mediated from 2.4}
+│   │   │   └── org.codehaus.plexus:plexus-utils:jar:3.0.17 {mediated from 2.1}
 │   │   ├── org.codehaus.plexus:plexus-interpolation:jar:1.19
 │   │   ├── org.codehaus.plexus:plexus-utils:jar:3.0.17
 │   │   ├── org.codehaus.plexus:plexus-classworlds:jar:2.5.1
 │   │   ├── org.codehaus.plexus:plexus-component-annotations:jar:1.5.5
 │   │   └── org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3
-│   │       ├── org.codehaus.plexus:plexus-utils:jar:1.5.5 {conflicts with 3.0.17}
+│   │       ├── org.codehaus.plexus:plexus-utils:jar:3.0.17 {mediated from 1.5.5}
 │   │       └── org.sonatype.plexus:plexus-cipher:jar:1.4
 │   ├── org.apache.maven:maven-model:jar:3.2.1
 │   │   └── org.codehaus.plexus:plexus-utils:jar:3.0.17
 │   ├── org.apache.maven.plugin-tools:maven-plugin-annotations:jar:3.4
-│   │   └── org.apache.maven:maven-artifact:jar:3.0 {conflicts with 3.2.1}
+│   │   └── org.apache.maven:maven-artifact:jar:3.2.1 {mediated from 3.0}
 │   ├── org.apache.maven:maven-plugin-api:jar:3.2.1
 │   │   ├── org.apache.maven:maven-model:jar:3.2.1
 │   │   ├── org.apache.maven:maven-artifact:jar:3.2.1

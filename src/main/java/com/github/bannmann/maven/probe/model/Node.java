@@ -13,9 +13,9 @@ public final class Node
     private final List<Node> children = new ArrayList<>();
 
     private Artifact artifact;
+    private Artifact unmediatedArtifact;
     private Attributes attributes;
     private Attributes premanagedAttributes;
-    private Artifact winningArtifact;
 
     public void add(Node child)
     {

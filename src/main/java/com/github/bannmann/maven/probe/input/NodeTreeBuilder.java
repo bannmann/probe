@@ -40,11 +40,10 @@ final class NodeTreeBuilder implements DependencyVisitor
     {
         Node result = new Node();
 
-        Artifact a = dependencyNode.getArtifact();
-        result.setArtifact(a);
+        Artifact artifact = dependencyNode.getArtifact();
 
         Dependency dependency = dependencyNode.getDependency();
-        Attributes attributes = getAttributes(a, dependency);
+        Attributes attributes = getAttributes(artifact, dependency);
         result.setAttributes(attributes);
 
         Attributes premanagedAttributes = getPremanagedAttributes(dependencyNode);
@@ -54,9 +53,14 @@ final class NodeTreeBuilder implements DependencyVisitor
         }
 
         Artifact winningArtifact = getWinningArtifact(dependencyNode);
-        if (winningArtifact != null && !ArtifactIdUtils.equalsId(a, winningArtifact))
+        if (winningArtifact != null && !ArtifactIdUtils.equalsId(artifact, winningArtifact))
         {
-            result.setWinningArtifact(winningArtifact);
+            result.setUnmediatedArtifact(artifact);
+            result.setArtifact(winningArtifact);
+        }
+        else
+        {
+            result.setArtifact(artifact);
         }
         return result;
     }

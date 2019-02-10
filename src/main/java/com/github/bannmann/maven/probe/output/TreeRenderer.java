@@ -59,7 +59,7 @@ public final class TreeRenderer
         getAttributeManagedRemark("scope", Attributes::getScope, node).ifPresent(result::append);
         getAttributeManagedRemark("optional", Attributes::getOptional, node).ifPresent(result::append);
 
-        getWinnerRemark(node).ifPresent(result::append);
+        getMediationRemark(node).ifPresent(result::append);
 
         return result.toString();
     }
@@ -105,14 +105,16 @@ public final class TreeRenderer
         return result;
     }
 
-    private Optional<String> getWinnerRemark(Node node)
+    private Optional<String> getMediationRemark(Node node)
     {
         String result = null;
 
-        Artifact winner = node.getWinningArtifact();
-        if (winner != null)
+        Artifact unmediatedArtifact = node.getUnmediatedArtifact();
+        if (unmediatedArtifact != null)
         {
-            result = MessageFormat.format(" '{'conflicts with {0}'}'", getShortArtifactId(node.getArtifact(), winner));
+            result = MessageFormat.format(
+                " '{'mediated from {0}'}'",
+                getShortArtifactId(node.getArtifact(), unmediatedArtifact));
         }
 
         return Optional.ofNullable(result);
