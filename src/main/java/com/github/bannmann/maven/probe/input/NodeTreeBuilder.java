@@ -44,10 +44,10 @@ final class NodeTreeBuilder implements DependencyVisitor
         result.setArtifact(a);
 
         Dependency dependency = dependencyNode.getDependency();
-        Attributes attributes = getFoo(a, dependency);
+        Attributes attributes = getAttributes(a, dependency);
         result.setAttributes(attributes);
 
-        Attributes premanagedAttributes = getPremanagedFoo(dependencyNode);
+        Attributes premanagedAttributes = getPremanagedAttributes(dependencyNode);
         if (!premanagedAttributes.equals(attributes))
         {
             result.setPremanagedAttributes(premanagedAttributes);
@@ -61,7 +61,7 @@ final class NodeTreeBuilder implements DependencyVisitor
         return result;
     }
 
-    private Attributes getFoo(Artifact artifact, Dependency d)
+    private Attributes getAttributes(Artifact artifact, Dependency d)
     {
         return Attributes.builder()
             .scope(d.getScope())
@@ -70,7 +70,7 @@ final class NodeTreeBuilder implements DependencyVisitor
             .build();
     }
 
-    private Attributes getPremanagedFoo(DependencyNode dependencyNode)
+    private Attributes getPremanagedAttributes(DependencyNode dependencyNode)
     {
         return Attributes.builder()
             .scope(DependencyManagerUtils.getPremanagedScope(dependencyNode))
