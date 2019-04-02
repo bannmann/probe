@@ -7,6 +7,5 @@ def occurrences(haystack, needle) {
 }
 
 assert occurrences(tree.text, 'io.netty:netty-transport:jar:4.0.44.Final') == 2
-assert occurrences(tree.text, 'io.netty:netty-buffer:jar:4.0.44.Final') == 2
 
 return true

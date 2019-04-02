@@ -5,6 +5,8 @@
     <artifactId>redundant</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
+    <description>Dependencies must appear each time they are referenced, not just at the first occurence.</description>
+
     <build>
         <plugins>
             <plugin>

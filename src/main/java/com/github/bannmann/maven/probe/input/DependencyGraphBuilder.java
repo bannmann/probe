@@ -24,14 +24,14 @@ import org.eclipse.aether.util.graph.selector.OptionalDependencySelector;
 import org.eclipse.aether.util.graph.selector.ScopeDependencySelector;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 
-import com.github.bannmann.maven.probe.model.Node;
+import com.github.bannmann.maven.probe.model.Graph;
 import com.google.common.collect.ImmutableList;
 
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
-public class DependencyLister
+public final class DependencyGraphBuilder
 {
     @RequiredArgsConstructor
-    private static class RootDependencySelector implements DependencySelector
+    private static final class RootDependencySelector implements DependencySelector
     {
         private static final DependencySelector
             CHILD_SELECTOR
@@ -57,8 +57,9 @@ public class DependencyLister
     private final RepositorySystemSession globalSystemSession;
     private final List<RemoteRepository> repositories;
     private final RepositorySystem system;
+    private final GraphBuildingVisitor graphBuildingVisitor;
 
-    public Node getNode() throws DependencyCollectionException
+    public Graph getGraph() throws DependencyCollectionException
     {
         DefaultArtifact rootArtifact = new DefaultArtifact(project.getArtifact().toString());
         Dependency rootDependency = new Dependency(rootArtifact, "compile");
@@ -72,8 +73,7 @@ public class DependencyLister
         collectRequest.setRoot(rootDependency);
         collectRequest.setRepositories(repositories);
         CollectResult collectResult = system.collectDependencies(systemSession, collectRequest);
-        NodeTreeBuilder nodeTreeBuilder = new NodeTreeBuilder();
-        collectResult.getRoot().accept(nodeTreeBuilder);
-        return nodeTreeBuilder.getRoot();
+        collectResult.getRoot().accept(graphBuildingVisitor);
+        return graphBuildingVisitor.getGraph();
     }
 }
