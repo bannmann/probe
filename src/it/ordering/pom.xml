@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.bannmann.maven.probe.its</groupId>
-    <artifactId>redundant</artifactId>
+    <artifactId>ordering</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <description>Dependencies must appear each time they are referenced, not just at the first occurence.</description>
+    <description>Nodes must always appear in the order they are referenced (in this pom and the referenced poms).</description>
 
     <build>
         <plugins>
@@ -28,9 +28,24 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-handler</artifactId>
-            <version>4.0.44.Final</version>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>animal-sniffer-annotations</artifactId>
+            <version>1.14</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
+            <version>3.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>26.0-jre</version>
         </dependency>
     </dependencies>
 </project>

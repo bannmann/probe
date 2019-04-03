@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.bannmann.maven.probe.its</groupId>
-    <artifactId>redundant</artifactId>
+    <artifactId>redundant-subtrees</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <description>Dependencies must appear each time they are referenced, not just at the first occurence.</description>
+    <description>Nodes must always include their subtree, not just at the first occurence.</description>
 
     <build>
         <plugins>

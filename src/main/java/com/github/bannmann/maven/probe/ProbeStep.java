@@ -16,19 +16,19 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.eclipse.aether.collection.DependencyCollectionException;
 
-import com.github.bannmann.maven.probe.input.DependencyLister;
-import com.github.bannmann.maven.probe.model.Node;
-import com.github.bannmann.maven.probe.output.TreeRenderer;
+import com.github.bannmann.maven.probe.input.DependencyGraphBuilder;
+import com.github.bannmann.maven.probe.model.Graph;
+import com.github.bannmann.maven.probe.output.TextRenderer;
 import com.itemis.maven.plugins.cdi.CDIMojoProcessingStep;
 import com.itemis.maven.plugins.cdi.ExecutionContext;
 import com.itemis.maven.plugins.cdi.annotations.ProcessingStep;
 
 @Slf4j
 @ProcessingStep(id = "probe", description = "Determines the project dependency graph.", requiresOnline = false)
-public class ProbeStep implements CDIMojoProcessingStep
+public final class ProbeStep implements CDIMojoProcessingStep
 {
     @Inject
-    private DependencyLister dependencyLister;
+    private DependencyGraphBuilder dependencyGraphBuilder;
 
     @Inject
     @Named("skip")
@@ -49,15 +49,15 @@ public class ProbeStep implements CDIMojoProcessingStep
         {
             try
             {
-                Node root = dependencyLister.getNode();
+                Graph graph = dependencyGraphBuilder.getGraph();
 
                 if (outputFile != null)
                 {
-                    writeToFile(root, outputFile);
+                    writeToFile(graph, outputFile);
                 }
                 else
                 {
-                    writeToConsole(root);
+                    writeToConsole(graph);
                 }
             }
             catch (DependencyCollectionException e)
@@ -68,14 +68,14 @@ public class ProbeStep implements CDIMojoProcessingStep
 
     }
 
-    private void writeToFile(Node root, Path file)
+    private void writeToFile(Graph graph, Path file)
     {
         try (
             BufferedWriter bufferedWriter = Files.newBufferedWriter(file);
             PrintWriter printWriter = new PrintWriter(bufferedWriter))
         {
             log.info("Writing tree to {}", file.toAbsolutePath());
-            new TreeRenderer().render(root, printWriter::println);
+            new TextRenderer(graph).render(printWriter::println);
         }
         catch (IOException e)
         {
@@ -83,8 +83,8 @@ public class ProbeStep implements CDIMojoProcessingStep
         }
     }
 
-    private void writeToConsole(Node root)
+    private void writeToConsole(Graph graph)
     {
-        new TreeRenderer().render(root, log::info);
+        new TextRenderer(graph).render(log::info);
     }
 }
