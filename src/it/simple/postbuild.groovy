@@ -1,6 +1,6 @@
-log = new File(basedir, 'build.log')
+tree = new File(basedir, 'probe-tree.txt')
 
-assert log.exists()
-assert log.text.contains('[INFO] └── com.google.guava:guava:jar:25.1-jre')
+assert tree.exists()
+assert tree.text.contains('└── com.google.guava:guava:jar:25.1-jre')
 
 return true

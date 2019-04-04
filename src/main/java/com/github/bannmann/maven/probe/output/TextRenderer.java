@@ -1,69 +1,136 @@
 package com.github.bannmann.maven.probe.output;
 
+import static com.github.bannmann.maven.probe.model.Edge.Type.ACTIVE;
+import static com.github.bannmann.maven.probe.model.Edge.Type.INACTIVE;
+import static com.github.bannmann.maven.probe.model.Edge.Type.MANAGED;
+import static com.github.bannmann.maven.probe.model.Edge.Type.MEDIATED;
+import static com.github.bannmann.maven.probe.model.Edge.Type.ORIGINAL;
 import static com.github.bannmann.maven.probe.output.Functions.applyMessageFormat;
 import static com.github.bannmann.maven.probe.output.Predicates.notEqual;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.github.bannmann.maven.probe.model.Graph;
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import com.github.bannmann.maven.probe.model.Edge;
+import com.github.bannmann.maven.probe.model.Graph;
+import com.github.bannmann.maven.probe.model.Node;
+import com.github.bannmann.maven.probe.util.NodeStack;
 
 public final class TextRenderer
 {
-    private final DependencyGraph dependencyGraph;
+    @Inject
+    private Provider<DependencyGraph> dependencyGraphProvider;
 
-    public TextRenderer(Graph graph)
-    {
-        this.dependencyGraph = new DependencyGraph(graph);
-    }
+    private final NodeStack renderedParents = new NodeStack();
 
-    public void render(Consumer<String> lineConsumer)
+    public void render(Graph graph, Consumer<String> lineConsumer)
     {
+        DependencyGraph dependencyGraph = dependencyGraphProvider.get();
+        dependencyGraph.initialize(graph);
         Dependency dependency = dependencyGraph.getRoot();
-        renderLine(lineConsumer, dependency, null, true);
+        renderLine(dependencyGraph, dependency, null, true, lineConsumer, false);
     }
 
-    private void renderLine(Consumer<String> lineConsumer, Dependency dependency, String prefix, boolean isTail)
+    private void renderLine(
+        DependencyGraph dependencyGraph,
+        Dependency dependency,
+        String prefix,
+        boolean isTail,
+        Consumer<String> lineConsumer,
+        boolean forceInactive)
     {
         String selfPrefix = "";
         String childPrefix = "";
+
         if (prefix != null)
         {
-            selfPrefix = prefix + (isTail ? "└── " : "├── ");
+            if (!isActive(dependency) || forceInactive)
+            {
+                selfPrefix = prefix + (isTail ? "└╶╶ " : "├╶╶ ");
+
+                // Ensure descendants are rendered inactive here even if they are already active elsewhere in the tree
+                forceInactive = true;
+            }
+            else
+            {
+                selfPrefix = prefix + (isTail ? "└── " : "├── ");
+            }
             childPrefix = prefix + (isTail ? "    " : "│   ");
         }
 
-        lineConsumer.accept(selfPrefix + renderNode(dependency));
+        Node target = dependency.getTarget();
 
-        List<Dependency> dependencyList = dependencyGraph.getDependencies(dependency.getTarget());
+        List<Dependency> dependencyList = dependencyGraph.getDependencies(target);
+        String loopHint = "";
+        if (renderedParents.contains(target))
+        {
+            dependencyList = Collections.emptyList();
+            loopHint = " // dependencies omitted to avoid loop";
+        }
+
+        lineConsumer.accept(selfPrefix + renderNode(dependency, forceInactive) + loopHint);
+
+        renderedParents.enter(target);
+
         for (ContextIterables.Iteration<Dependency> iteration : ContextIterables.create(dependencyList))
         {
-            renderLine(lineConsumer, iteration.getElement(), childPrefix, iteration.isLast());
+            renderLine(dependencyGraph,
+                iteration.getElement(),
+                childPrefix,
+                iteration.isLast(),
+                lineConsumer,
+                forceInactive);
         }
+
+        renderedParents.leave();
     }
 
-    private String renderNode(Dependency dependency)
+    private String renderNode(Dependency dependency, boolean forceInactive)
     {
         StringBuilder result = new StringBuilder();
 
         result.append(getNodeLabel(dependency));
 
-        dependency.getEdge(Edge.Type.ACTIVE).ifPresent(activeEdge -> {
-            getScopeLabel(activeEdge).ifPresent(result::append);
-            getOptionalityLabel(activeEdge).ifPresent(result::append);
+        Optional<Edge> activeEdgeOptional = dependency.getEdge(ACTIVE);
+        Optional<Edge> primaryEdgeOptional = dependency.getPrimaryEdge();
+
+        primaryEdgeOptional.ifPresent(edge -> {
+            getScopeLabel(edge).ifPresent(result::append);
+            getOptionalityLabel(edge).ifPresent(result::append);
+        });
+
+        activeEdgeOptional.ifPresent(activeEdge -> {
             getManagementLabel("version", Edge::getVersion, dependency).ifPresent(result::append);
             getManagementLabel("scope", Edge::getScope, dependency).ifPresent(result::append);
             getManagementLabel("optional", Edge::getOptional, dependency).ifPresent(result::append);
             getMediationLabel(dependency).ifPresent(result::append);
         });
 
+        MoreOptionals.firstPresent(getInactiveEdgeTypeHint(dependency, ORIGINAL),
+            getInactiveEdgeTypeHint(dependency, INACTIVE),
+            getForcedInactiveHint(forceInactive)).ifPresent(result::append);
+
         return result.toString();
+    }
+
+    private Optional<String> getForcedInactiveHint(boolean forceInactive)
+    {
+        return Optional.of(forceInactive).filter(isTrue()).map(b -> " ~inactive~");
+    }
+
+    private Predicate<Boolean> isTrue()
+    {
+        return force -> force;
     }
 
     private String getNodeLabel(Dependency dependency)
@@ -85,8 +152,8 @@ public final class TextRenderer
         String attribute, Function<Edge, Optional<?>> getAttribute, Dependency dependency)
     {
         return getSecondIfDifferent(dependency,
-            Edge.Type.MANAGED,
-            Edge.Type.ORIGINAL,
+            MANAGED,
+            ORIGINAL,
             getAttribute,
             " (" + attribute + " managed from {0})");
     }
@@ -119,10 +186,23 @@ public final class TextRenderer
 
     private Optional<String> getMediationLabel(Dependency dependency)
     {
-        return getSecondIfDifferent(dependency,
-            Edge.Type.MEDIATED,
-            Edge.Type.ORIGINAL,
-            Edge::getVersion,
-            " '{'mediated from {0}'}'");
+        return getSecondIfDifferent(dependency, MEDIATED, ORIGINAL, Edge::getVersion, " '{'mediated from {0}'}'");
+    }
+
+    private Optional<String> getInactiveEdgeTypeHint(Dependency dependency, Edge.Type type)
+    {
+        if (isActive(dependency))
+        {
+            return Optional.empty();
+        }
+
+        return dependency.getEdge(type)
+            .map(edge -> edge.getType().toString().toLowerCase())
+            .map(applyMessageFormat(" ~{0}~"));
+    }
+
+    private boolean isActive(Dependency dependency)
+    {
+        return dependency.hasEdge(ACTIVE);
     }
 }

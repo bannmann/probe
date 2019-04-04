@@ -31,6 +31,9 @@ public final class ProbeStep implements CDIMojoProcessingStep
     private DependencyGraphBuilder dependencyGraphBuilder;
 
     @Inject
+    private TextRenderer textRenderer;
+
+    @Inject
     @Named("skip")
     private boolean skip;
 
@@ -75,7 +78,7 @@ public final class ProbeStep implements CDIMojoProcessingStep
             PrintWriter printWriter = new PrintWriter(bufferedWriter))
         {
             log.info("Writing tree to {}", file.toAbsolutePath());
-            new TextRenderer(graph).render(printWriter::println);
+            textRenderer.render(graph, printWriter::println);
         }
         catch (IOException e)
         {
@@ -85,6 +88,6 @@ public final class ProbeStep implements CDIMojoProcessingStep
 
     private void writeToConsole(Graph graph)
     {
-        new TextRenderer(graph).render(log::info);
+        textRenderer.render(graph, log::info);
     }
 }

@@ -8,15 +8,5 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>redundant-subtrees</artifactId>
-
-    <description>Nodes must always include their subtree, not just at the first occurence.</description>
-
-    <dependencies>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-handler</artifactId>
-            <version>4.0.44.Final</version>
-        </dependency>
-    </dependencies>
+    <artifactId>empty</artifactId>
 </project>

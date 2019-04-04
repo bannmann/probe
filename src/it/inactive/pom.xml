@@ -8,15 +8,32 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>redundant-subtrees</artifactId>
-
-    <description>Nodes must always include their subtree, not just at the first occurence.</description>
+    <artifactId>inactive</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec</artifactId>
+            <version>4.1.9.Final</version>
+        </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
             <version>4.0.44.Final</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.github.bannmann.maven.probe</groupId>
+                    <artifactId>probe-maven-plugin</artifactId>
+                    <configuration>
+                        <includeInactive>true</includeInactive>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

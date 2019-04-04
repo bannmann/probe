@@ -3,12 +3,11 @@ package com.github.bannmann.maven.probe.model;
 import java.util.Objects;
 import java.util.Optional;
 
-
 public interface Edge
 {
     enum Type
     {
-        ACTIVE, MANAGED, MEDIATED, ORIGINAL
+        ACTIVE, MANAGED, MEDIATED, ORIGINAL, INACTIVE
     }
 
     Optional<Edge> getActive();

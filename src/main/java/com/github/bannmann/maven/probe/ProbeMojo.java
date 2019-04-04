@@ -43,6 +43,23 @@ public final class ProbeMojo extends AbstractCDIMojo
     private boolean skip;
 
     /**
+     * Set this to 'true' to also include artifacts which are not part of the tree due to mediation/management, plus
+     * their dependencies.
+     */
+    @Parameter(property = "probe.includeInactive", defaultValue = "false")
+    @MojoProduces
+    @Named("includeInactive")
+    private boolean includeInactive;
+
+    /**
+     * Set this to 'true' to also include dependencies which are optional.
+     */
+    @Parameter(property = "probe.includeOptional", defaultValue = "false")
+    @MojoProduces
+    @Named("includeOptional")
+    private boolean includeOptional;
+
+    /**
      * Probe tree is written to this file instead of the console.
      */
     @Parameter(property = "probe.outputFile")
