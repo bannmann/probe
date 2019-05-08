@@ -24,14 +24,14 @@ import javax.inject.Provider;
 import com.github.bannmann.maven.probe.model.Edge;
 import com.github.bannmann.maven.probe.model.Graph;
 import com.github.bannmann.maven.probe.model.Node;
-import com.github.bannmann.maven.probe.util.NodeStack;
+import com.github.bannmann.maven.probe.util.DequeStack;
 
 public final class TextRenderer
 {
     @Inject
     private Provider<DependencyGraph> dependencyGraphProvider;
 
-    private final NodeStack renderedParents = new NodeStack();
+    private final DequeStack renderedParents = new DequeStack();
 
     public void render(Graph graph, Consumer<String> lineConsumer)
     {

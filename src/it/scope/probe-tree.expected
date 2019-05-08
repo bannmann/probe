@@ -1,0 +1,7 @@
+com.github.bannmann.maven.probe.its:scope:jar:0.0.1-SNAPSHOT
+├── com.example:aipe:jar:1.0 [test]             # direct 'test' dependency must be listed
+├── com.example:ginexi:jar:0.3 [provided]       # 'compile' dependencies of this 'provided' dependency become 'provided' as well
+│   ├── com.example:donk:jar:3.2 [provided]
+│   └── com.example:bexac:jar:0.9 [provided]
+├── com.example:kesh:jar:2.6.0                  # regular 'compile' dependency; its 'test' dependency to com.example:donk is not listed.
+└── com.example:privil:jar:1.0 [runtime]

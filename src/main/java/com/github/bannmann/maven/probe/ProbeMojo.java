@@ -14,6 +14,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectDependenciesResolver;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
@@ -64,6 +65,10 @@ public final class ProbeMojo extends AbstractCDIMojo
      */
     @Parameter(property = "probe.outputFile")
     private String outputFile;
+
+    @Component
+    @MojoProduces
+    private ProjectDependenciesResolver projectDependenciesResolver;
 
     @Component
     @MojoProduces

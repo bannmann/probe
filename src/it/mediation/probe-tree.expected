@@ -1,0 +1,11 @@
+com.github.bannmann.maven.probe.its:mediation:jar:0.0.1-SNAPSHOT
+├── com.example:ginexi:jar:0.3
+│   ├── com.example:donk:jar:3.2
+│   └── com.example:bexac:jar:0.9                                                                 # B1: wins against B2 due to pom dependency order ('ginexi' before 'smeezoc')
+├── com.example:kesh:jar:2.6.0 [provided]
+├── com.example:niranka:jar:7.1
+│   ├── com.example:privil:jar:1.0 {mediated from 2.0}                                            # A2: loses to A1
+│   └── com.example:kesh:jar:2.6.0 [provided] (scope managed from compile) {mediated from 2.6.1}  # C: plugin must not confuse version mediation with version management
+├── com.example:privil:jar:1.0                                                                    # A1: wins against A2 due to shorter distance to root
+└── com.example:smeezoc:jar:4.0
+    └── com.example:bexac:jar:0.9 {mediated from 0.8}                                             # B2: loses to B1

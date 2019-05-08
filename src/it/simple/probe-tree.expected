@@ -1,0 +1,7 @@
+com.github.bannmann.maven.probe.its:simple:jar:0.0.1-SNAPSHOT
+├── com.example:niranka:jar:7.1
+│   ├── com.example:privil:jar:2.0
+│   └── com.example:kesh:jar:2.6.1
+└── com.example:smeezoc:jar:4.0      # smeezoc's optional dependency to 'privil' must not be listed (see also 'optional' IT)
+    └── com.example:bexac:jar:0.8
+        └── com.example:aipe:jar:1.0

@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.DependencyResolutionException;
 import org.eclipse.aether.collection.DependencyCollectionException;
 
 import com.github.bannmann.maven.probe.input.DependencyGraphBuilder;
@@ -63,7 +64,7 @@ public final class ProbeStep implements CDIMojoProcessingStep
                     writeToConsole(graph);
                 }
             }
-            catch (DependencyCollectionException e)
+            catch (DependencyCollectionException | DependencyResolutionException e)
             {
                 throw new MojoFailureException("Could not collect dependencies", e);
             }

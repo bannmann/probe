@@ -2,25 +2,27 @@ tree = new File(basedir, 'probe-tree.txt')
 
 assert tree.exists()
 
-def artifactOrder = tree.text.findAll(":guava|:metrics-core|:junit|:animal-sniffer-annotations|:jsr305")
+def artifactOrder = tree.text.findAll("(?<=com.example:)[a-z]+")
 
 /*
 
 This is the structure of the expected tree.
 
-Note that 'animal-sniffer-annotations' is the first dependency of 'ordering', but the second one of 'guava'.
+Note that 'kesh' is the first dependency of 'ordering', but the second one of 'niranka'.
+Also, the ordering of 'ginexi' dependencies is non-alphabetical.
 
     ordering
-        animal-sniffer-annotations
-        junit
-        metrics-core
-        guava
-            jsr305
-            animal-sniffer-annotations
+        kesh
+        ginexi
+            donk
+            bexac
+        aipe
+        niranka
+            privil
+            kesh
 
 */
 
-assert artifactOrder == [":animal-sniffer-annotations", ":junit", ":metrics-core", ":guava", ":jsr305", ":animal-sniffer-annotations"]
-
+assert artifactOrder == ["kesh", "ginexi", "donk", "bexac", "aipe", "niranka", "privil", "kesh"]
 
 return true

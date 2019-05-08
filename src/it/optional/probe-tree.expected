@@ -1,0 +1,5 @@
+com.github.bannmann.maven.probe.its:optional:jar:0.0.1-SNAPSHOT
+└── com.example:smeezoc:jar:4.0
+    ├── com.example:bexac:jar:0.8
+    │   └── com.example:aipe:jar:1.0
+    └── com.example:privil:jar:2.0 <optional>

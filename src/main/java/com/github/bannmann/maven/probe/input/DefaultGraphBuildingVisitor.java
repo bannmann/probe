@@ -9,17 +9,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.graph.DependencyVisitor;
 
 import com.github.bannmann.maven.probe.model.Edge;
 import com.github.bannmann.maven.probe.model.Node;
-import com.github.bannmann.maven.probe.util.NodeStack;
+import com.github.bannmann.maven.probe.util.DequeStack;
 import com.google.common.graph.MutableNetwork;
 
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
-final class DefaultGraphBuildingVisitor implements GraphBuildingVisitor
+final class DefaultGraphBuildingVisitor implements DependencyVisitor
 {
-    private final NodeStack parentNodes = new NodeStack();
+    private final DequeStack parentNodes = new DequeStack();
 
     private final ActiveBranchFactory activeBranchFactory;
     private final MediatedBranchFactory mediatedBranchFactory;

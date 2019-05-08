@@ -8,9 +8,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 
+import org.apache.maven.project.DependencyResolutionException;
+import org.apache.maven.project.DependencyResolutionResult;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.collection.DependencyCollectionException;
 
@@ -39,13 +40,14 @@ public final class DependencyGraphBuilder
     @Inject
     private DependencyCollector dependencyCollector;
 
-    public Graph getGraph() throws DependencyCollectionException
-    {
-        DefaultArtifact rootArtifact = new DefaultArtifact(project.getArtifact().toString());
+    @Inject
+    private DependencyResolver dependencyResolver;
 
+    public Graph getGraph() throws DependencyCollectionException, DependencyResolutionException
+    {
         MutableNetwork<Node, Edge> network = createEmptyNetwork();
 
-        applyVisitor(rootArtifact, defaultGraphBuildingVisitorProvider, network);
+        resolve(network);
 
         if (includeInactive)
         {
@@ -64,16 +66,13 @@ public final class DependencyGraphBuilder
             .build();
     }
 
-    private void applyVisitor(
-        Artifact rootArtifact,
-        Provider<? extends GraphBuildingVisitor> visitorProvider,
-        MutableNetwork<Node, Edge> targetNetwork) throws DependencyCollectionException
+    private void resolve(MutableNetwork<Node, Edge> targetNetwork) throws DependencyResolutionException
     {
-        CollectResult collectResult = dependencyCollector.collect(rootArtifact);
+        DependencyResolutionResult resolutionResult = dependencyResolver.resolve(project);
 
-        GraphBuildingVisitor visitor = visitorProvider.get();
+        DefaultGraphBuildingVisitor visitor = defaultGraphBuildingVisitorProvider.get();
         visitor.initialize(targetNetwork);
-        collectResult.getRoot().accept(visitor);
+        resolutionResult.getDependencyGraph().accept(visitor);
     }
 
     private void addInactiveDependencies(MutableNetwork<Node, Edge> network) throws DependencyCollectionException
@@ -87,12 +86,22 @@ public final class DependencyGraphBuilder
         // Loop over inactive artifacts separately to avoid concurrent modification exceptions
         for (Artifact artifact : inactiveArtifacts)
         {
-            applyVisitor(artifact, inactiveGraphBuildingVisitorProvider, network);
+            collect(artifact, network);
         }
     }
 
     private Predicate<Node> hasNoActiveEdges(MutableNetwork<Node, Edge> network)
     {
         return node -> network.incidentEdges(node).stream().noneMatch(edge -> edge.getType() == Edge.Type.ACTIVE);
+    }
+
+    private void collect(Artifact rootArtifact, MutableNetwork<Node, Edge> targetNetwork)
+        throws DependencyCollectionException
+    {
+        CollectResult collectResult = dependencyCollector.collect(rootArtifact);
+
+        InactiveGraphBuildingVisitor visitor = inactiveGraphBuildingVisitorProvider.get();
+        visitor.initialize(targetNetwork);
+        collectResult.getRoot().accept(visitor);
     }
 }

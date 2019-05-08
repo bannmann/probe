@@ -72,8 +72,11 @@ final class DependencyGraph
         for (EdgeGroup edgeGroup : getEdgeGroups(node))
         {
             Dependency dependency = createDependency(edgeGroup);
-            getPrimaryEdge(dependency).ifPresent(edge -> result.add(dependency));
-            getOriginalEdge(dependency).ifPresent(edge -> result.add(createDependency(edge)));
+            getPrimaryEdge(dependency).ifPresent(primaryEdge -> {
+                result.add(dependency);
+
+                getOriginalEdge(dependency).ifPresent(originalEdge -> result.add(createDependency(originalEdge)));
+            });
         }
 
         return result;

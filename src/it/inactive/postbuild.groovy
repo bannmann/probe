@@ -2,14 +2,20 @@ tree = new File(basedir, 'probe-tree.txt')
 
 assert tree.exists()
 
-def nettyCommon = tree.text.findAll(".*io.netty:netty-common:jar:4.1.9.Final.*")
-assert nettyCommon.size == 6
-nettyCommon.each {
-    assert it.contains('~original~') || it.contains('~inactive~')
+def bexac = tree.text.findAll(".*com.example:bexac:jar:0.8.*")
+assert bexac.size == 1
+bexac.each {
+    assert it.contains('~original~')
 }
 
-// netty-common 4.0.44.Final is 'transitively inactive' beneath netty-codec 4.0.44.Final despite being active elsewhere
-assert tree.text.contains("io.netty:netty-common:jar:4.0.44.Final ~inactive~");
+// com.example:donk is managed to 'provided' scope, so the original node must also appear
+assert tree.text.contains("com.example:donk:jar:3.2 ~original~")
+
+// com.example:aipe:jar:1.0 is 'transitively inactive' beneath com.example:bexac:jar:0.8 despite being active elsewhere
+assert tree.text.contains("com.example:aipe:jar:1.0 ~inactive~");
+
+// ensure that including inactive dependencies does not result in listing optional ones (e.g. smeezoc -> privil)
+assert !tree.text.contains("<optional>");
 
 def inactiveOrOriginal = tree.text.findAll(".*~(inactive|original)~.*")
 inactiveOrOriginal.each {

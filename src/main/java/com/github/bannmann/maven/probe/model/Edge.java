@@ -7,7 +7,12 @@ public interface Edge
 {
     enum Type
     {
-        ACTIVE, MANAGED, MEDIATED, ORIGINAL, INACTIVE
+        ACTIVE, MANAGED, MEDIATED, ORIGINAL, INACTIVE,
+
+        /**
+         * The synthetic inbound edge of the root node.
+         */
+        ROOT
     }
 
     Optional<Edge> getActive();

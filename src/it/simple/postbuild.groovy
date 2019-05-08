@@ -1,6 +1,11 @@
 tree = new File(basedir, 'probe-tree.txt')
+expected = new File(basedir, 'probe-tree.expected')
 
 assert tree.exists()
-assert tree.text.contains('└── com.google.guava:guava:jar:25.1-jre')
+
+// remove end of line comments
+expectedTree = expected.text.replaceAll(/ +#.*/, "")
+
+assert tree.text == expectedTree
 
 return true

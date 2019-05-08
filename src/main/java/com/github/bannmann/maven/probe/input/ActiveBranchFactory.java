@@ -24,6 +24,12 @@ final class ActiveBranchFactory
     private Edge createActiveEdge(DependencyNode dependencyNode)
     {
         Dependency dependency = dependencyNode.getDependency();
+        if (dependency == null)
+        {
+            // dependencyNode is the root node of the graph. Synthesize an inbound edge for easier iteration.
+            return EdgeImpl.builder().type(Edge.Type.ROOT).build();
+        }
+
         return EdgeImpl.builder()
             .type(Edge.Type.ACTIVE)
             .scope(dependency.getScope())

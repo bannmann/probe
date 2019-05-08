@@ -6,6 +6,7 @@
         <groupId>com.github.bannmann.maven.probe.its</groupId>
         <artifactId>tree-test-base</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../setup/test-base/tree/pom.xml</relativePath>
     </parent>
 
     <artifactId>redundant-subtrees</artifactId>
@@ -14,9 +15,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-handler</artifactId>
-            <version>4.0.44.Final</version>
+            <groupId>com.example</groupId>
+            <artifactId>niranka</artifactId>
+            <version>7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>zerish</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 </project>

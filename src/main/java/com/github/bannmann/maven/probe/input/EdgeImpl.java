@@ -15,11 +15,6 @@ import com.github.bannmann.maven.probe.model.Edge;
 @ToString(doNotUseGetters = true)
 final class EdgeImpl implements Edge
 {
-    public static class EdgeImplBuilder
-    {
-        // Declaring this class prevents lombok from making the builder class package-protected (like EdgeImpl)
-    }
-
     public static EdgeImplBuilder toBuilder(Edge edge)
     {
         return ((EdgeImpl) edge).toBuilder();
